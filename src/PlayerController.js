@@ -45,16 +45,16 @@ export default class PlayerController extends PlayerControllerInput {
     constructor(keyLeft, keyRight, keyJump, playerModel) {
         super(keyLeft, keyRight, keyJump);
 
-        this._gravity = -0.2;
+        this._gravity = -0.15;
         this._acceleration = new Vector2(0.15, 0.4);
         this._velocity = new Vector2(0, 0);
-        this._maxVelocity = new Vector2(4, 7);
+        this._maxVelocity = new Vector2(6, 7);
 
         this.playerModel = playerModel;
         this.inAir = false;
     }
 
-    update(delta, collided) {
+    update(delta, colliders) {
         if (this._keyLeft.pressed) {
             if (this._velocity.x > -this._maxVelocity.x) {
                 Math.sign(this._velocity.x) == 1 ? this._velocity.x -= this._acceleration.x * 2.5 : this._velocity.x -= this._acceleration.x;
@@ -81,16 +81,18 @@ export default class PlayerController extends PlayerControllerInput {
             }
         }
 
-        //Works but refactor pls, this code is horrible
-        if (!collided) {
+        if (colliders.right && this._velocity.x > 0) this._velocity.x = 0;
+        if (colliders.left && this._velocity.x < 0) this._velocity.x = 0;
+
+        if (!colliders.bottom) {
             this._velocity.y += this._gravity * 1.1;
             this.inAir = false;
-        } else if (collided && !this.inAir) {
+        } else if (colliders.bottom && !this.inAir) {
             this._velocity.y = 0;
             this.inAir = true;
         }
 
-        if (this._keyJump.pressed && this.inAir) this._velocity.y = 8.5;
+        if (this._keyJump.pressed && this.inAir) this._velocity.y = 6.5;
 
         this.playerModel.position.x += (this._velocity.x * delta);
         this.playerModel.position.y += (this._velocity.y * delta);

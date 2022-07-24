@@ -1,0 +1,115 @@
+@font-face {
+    font-family: "test";
+    src: url("/resources//fonts/UASQUARE.TTF") format("truetype");
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+#menu-wrapper {
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    /* background-color: #000000a0; */
+}
+
+#main-menu {
+    color: #fff;
+    font-family: "test";
+    padding: 2.5em;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100vh;
+    user-select: none;
+}
+
+#game-title {
+    font-size: 6rem;
+    margin-top: 0;
+    filter:
+        drop-shadow(0px 0px 2.5px #ffffff) drop-shadow(0px 0px 10px #0084ffa0) drop-shadow(0px 0px 10px #0084ffa0);
+    animation-name: breathe;
+    animation-duration: 10s;
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+    animation-iteration-count: infinite;
+    letter-spacing: 10;
+}
+
+#menu-selection {
+    list-style: none;
+    padding: 0;
+    font-size: 3rem;
+    margin-bottom: 25%;
+}
+
+.menu-choice {
+    margin-bottom: 0.75em;
+    cursor: pointer;
+    max-width: max-content;
+    transition: all .25s cubic-bezier(0, 0, 0.2, 1);
+    filter: drop-shadow(0px 0px 2px #ffffff);
+}
+
+.menu-choice:focus {
+    outline: 0;
+    color: red;
+}
+
+.selected {
+    transform: scale(1.2) translateX(10);
+    filter:
+        drop-shadow(0px 0px 2.5px #ffffff) drop-shadow(0px 0px 10px #0084ffa0) drop-shadow(0px 0px 1px #0084ff20);
+}
+
+#options-selection {
+    padding: 0;
+    list-style: none;
+    position: absolute;
+    top: 10.725em;
+    left: 7em;
+    font-size: 2.5rem;
+}
+
+.options-choice {
+    margin-bottom: 0.75em;
+    filter: drop-shadow(0px 0px 2px #ffffff);
+    cursor: pointer;
+    display: none;
+}
+
+.options-choice:focus {
+    outline: 0;
+}
+
+.options-choice:after {
+    content: "";
+    display: block;
+    position: relative;
+    top: 10px;
+    width: 0%;
+    height: 3px;
+    background-color: #fff;
+    transition: all .25s cubic-bezier(0, 0, 0.2, 1);
+}
+
+.options-choice:focus:after {
+    width: 100%;
+}
+
+@keyframes breathe {
+    0% {
+        filter: drop-shadow(0px 0px 2px #ffffff);
+    }
+
+    50% {
+        filter:
+            drop-shadow(0px 0px 2.5px #ffffff) drop-shadow(0px 0px 2px #0084ffa0);
+    }
+
+    100% {
+        filter: drop-shadow(0px 0px 2px #ffffff)
+    }
+}
