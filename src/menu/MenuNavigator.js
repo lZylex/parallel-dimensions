@@ -19,8 +19,15 @@ export default class MenuNavigator {
                     } else this._currentChoice = this._menuChoices[this._menuChoices.indexOf(this._currentChoice) + 1];
                     this._currentChoice.classList.add("selected");
                     break;
+                case "enter":
+                    let currentChoiceRef = this._menuChoices[this._menuChoices.indexOf(this._currentChoice)];
+                    switch (currentChoiceRef.innerText) {
+                        case "Play":
+                            window.location.href = "./game.html"
+                    }
+
             }
-            console.log(this._currentChoice);
+            // console.log(this._currentChoice);
         })
     }
 }
