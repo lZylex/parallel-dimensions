@@ -2,10 +2,11 @@ import * as THREE from "three"
 import { Vector2 } from "three"
 
 class PlayerControllerInput {
-    constructor(keyLeft, keyRight, keyJump) {
-        this._keyLeft = { key: keyLeft.toLowerCase(), pressed: false };
-        this._keyRight = { key: keyRight.toLowerCase(), pressed: false };
-        this._keyJump = { key: keyJump.toLowerCase(), pressed: false };
+    constructor(keys) {
+        console.log(keys);
+        this._keyLeft = { key: keys[0].toLowerCase(), pressed: false };
+        this._keyRight = { key: keys[1].toLowerCase(), pressed: false };
+        this._keyJump = { key: keys[2].toLowerCase(), pressed: false };
 
         this._Init();
     }
@@ -42,13 +43,13 @@ class PlayerControllerInput {
 }
 
 export default class PlayerController extends PlayerControllerInput {
-    constructor(keyLeft, keyRight, keyJump, playerModel) {
-        super(keyLeft, keyRight, keyJump);
+    constructor(keys, playerModel) {
+        super(keys);
 
         this._gravity = -0.15;
-        this._acceleration = new Vector2(0.15, 0.4);
+        this._acceleration = new Vector2(0.175, 0.4);
         this._velocity = new Vector2(0, 0);
-        this._maxVelocity = new Vector2(6, 7);
+        this._maxVelocity = new Vector2(4.5, 7);
 
         this.playerModel = playerModel;
         this.inAir = false;

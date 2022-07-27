@@ -13,15 +13,21 @@ import MenuNavigator from "./MenuNavigator.js"
 
 class AppInit {
     constructor() {
-        this._initialize();
+        this._Initialize();
     }
 
-    _initialize() {
+    _Initialize() {
         this.renderer = new THREE.WebGLRenderer({
             antialias: true
         })
 
-        this.renderer.setPixelRatio(window.devicePixelRatio);
+        if (localStorage.length == 0) {
+            localStorage.postprocessing = true;
+            localStorage.keybinds = ["a", "d", " "];
+            localStorage.resolution = 1.0;
+        }
+
+        this.renderer.setPixelRatio(window.devicePixelRatio * (parseFloat(localStorage.resolution) ** 1.75));
         this.renderer.setSize(window.innerWidth, window.innerHeight);
 
         this.renderer.shadowMap.enabled = true;
@@ -136,9 +142,9 @@ class AppInit {
 
         // this.controls = new OrbitControls(this.camera, this.renderer.domElement);
 
-        new MenuNavigator();
+        new MenuNavigator(this.renderer);
 
-        this.playerController = new PlayerController("a", "d", " ", this.playerModel);
+        this.playerController = new PlayerController(localStorage.keybinds.split(","), this.playerModel);
 
         this.lastTime = Date.now();
         this.delta;
@@ -155,7 +161,7 @@ class AppInit {
 
     _Animate() {
         this.delta = (Date.now() - this.lastTime) / 1000;
-        if (this.delta > 0.15) this.delta = 0.15;
+        if (this.delta > 0.15) this.delta = 0.15; //low fps cap
 
         requestAnimationFrame(() => this._Animate());
 
@@ -200,8 +206,16 @@ class AppInit {
 
         // this.camera.position.x = this.playerModel.position.x;
 
-        this.composer.render(); //else this.renderer.render(this.scene, this.camera);
-        // this.renderer.render(this.scene, this.camera);
+        // if (localStorage.postprocessing === "true") {
+        //     this.composer.render();
+        // } else {
+        //     this.renderer.render(this.scene, this.camera);
+        // }
+
+        localStorage.postprocessing === "true" ? this.composer.render() : this.renderer.render(this.scene, this.camera);
+
+        //else this.renderer.render(this.scene, this.camera);
+        // 
 
         this.lastTime = Date.now();
     }
@@ -217,8 +231,9 @@ class AppInit {
     }
 }
 
-let _APP = null;
+// let _APP = null;
 
 window.addEventListener("DOMContentLoaded", () => {
-    _APP = new AppInit();
+    // _APP = new AppInit();
+    new AppInit();
 })

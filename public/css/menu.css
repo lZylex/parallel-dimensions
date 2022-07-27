@@ -50,18 +50,24 @@ body {
     cursor: pointer;
     max-width: max-content;
     transition: all .25s cubic-bezier(0, 0, 0.2, 1);
-    filter: drop-shadow(0px 0px 2px #ffffff);
+    position: relative;
 }
 
-.menu-choice:focus {
-    outline: 0;
-    color: red;
+.menu-choice:hover {
+    filter: drop-shadow(0px 0px 1px #ffffff4a);
+    transform: translate(10);
 }
 
 .selected {
     transform: scale(1.2) translateX(10);
-    filter:
-        drop-shadow(0px 0px 2.5px #ffffff) drop-shadow(0px 0px 10px #0084ffa0) drop-shadow(0px 0px 1px #0084ff20);
+    /* filter:
+    drop-shadow(0px 0px 2.5px #ffffff) drop-shadow(0px 0px 10px #0084ffa0) drop-shadow(0px 0px 1px #0084ff20); */
+    text-shadow: 0 -1px 4px #FFF, 0 -2px 14px rgb(0, 204, 255), 1 1px 17px #0026ff, -1 -1px 1px rgb(111, 0, 255);
+}
+
+.selected:hover {
+    /*exception case*/
+    transform: scale(1.2) translateX(20) !important;
 }
 
 #options-selection {
@@ -71,28 +77,36 @@ body {
     top: 10.725em;
     left: 7em;
     font-size: 2.5rem;
+    display: none;
+    animation-name: smooth-in;
+    animation-duration: 0.5s;
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+    animation-fill-mode: forwards;
 }
 
 .options-choice {
     margin-bottom: 0.75em;
     filter: drop-shadow(0px 0px 2px #ffffff);
     cursor: pointer;
-    display: none;
+    transition: all .25s cubic-bezier(0, 0, 0.2, 1);
 }
 
-.options-choice:focus {
-    outline: 0;
+.options-choice:hover {
+    text-shadow: 0px 0px 10px #ffffff;
 }
 
-.options-choice:after {
+.option-selected:after {
     content: "";
     display: block;
     position: relative;
     top: 10px;
-    width: 0%;
+    /* width: 100%; */
     height: 3px;
     background-color: #fff;
-    transition: all .25s cubic-bezier(0, 0, 0.2, 1);
+    animation-name: expand-smooth-in;
+    animation-duration: 0.3s;
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+    animation-fill-mode: forwards;
 }
 
 .options-choice:focus:after {
@@ -111,5 +125,28 @@ body {
 
     100% {
         filter: drop-shadow(0px 0px 2px #ffffff)
+    }
+}
+
+/* TODO: Make animation on exit as well*/
+@keyframes smooth-in {
+    0% {
+        opacity: 0;
+        transform: translateX(-30%);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(-10%);
+    }
+}
+
+@keyframes expand-smooth-in {
+    0% {
+        width: 0%;
+    }
+
+    100% {
+        width: 100%;
     }
 }
