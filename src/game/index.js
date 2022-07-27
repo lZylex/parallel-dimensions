@@ -14,9 +14,7 @@ class AppInit {
 
     _initialize() {
         this.scene = new SceneSetup();
-        this.scene.initialize();
-
-        this.playerController = new PlayerController(localStorage.keybinds.split(","), this.scene.playerModel);
+        this.scene.initialize(false);
 
         this.lastTime = Date.now();
         this.delta;
@@ -28,28 +26,37 @@ class AppInit {
 
         this.cameraOffset;
 
-        this._Animate();
+        this.playerController = new PlayerController(localStorage.keybinds.split(","), this.scene.playerModel);
+
+        this._animate();
     }
 
-    _Animate() {
+    _animate() {
         this.delta = (Date.now() - this.lastTime) / 1000;
-        if (this.delta > 0.15) this.delta = 0.15; //low fps cap
+        if (this.delta > 0.010) this.delta = 0.010; //low fps cap
 
-        this._CheckCollision();
-        this.playerController.update(this.delta, { bottom: this.bottomCollided, right: this.rightCollided, left: this.leftCollided })
+        this._checkCollision();
 
-        this.scene.playerModel.updateMatrixWorld();
-        this.cameraOffset = new THREE.Vector3(0.1, 0.6, 1).applyMatrix4(this.scene.playerModel.matrixWorld);
-        this.scene.camera.position.lerp(this.cameraOffset, 0.095);
+        this.playerController.update(this.delta, { bottom: this.bottomCollided, right: this.rightCollided, left: this.leftCollided }, this.scene.player.currentDimension);
+        this.playerController.inAir ? this.scene.player.canSwitch = true : this.scene.player.canSwitch = false;
+
+
+        if (this.scene.player.switchDimension) this._switch();
+
+        if (this.scene.player.currentDimension !== "3D") {
+            this.scene.playerModel.updateMatrixWorld();
+            this.cameraOffset = new THREE.Vector3(0.1, 0.6, 1).applyMatrix4(this.scene.playerModel.matrixWorld);
+            this.scene.camera.position.lerp(this.cameraOffset, 0.095);
+        }
 
         localStorage.postprocessing === "true" ? this.scene.composer.render() : this.scene.renderer.render(this.scene, this.scene.camera);
 
-        requestAnimationFrame(() => this._Animate());
+        requestAnimationFrame(() => this._animate());
 
         this.lastTime = Date.now();
     }
 
-    _CheckCollision() {
+    _checkCollision() {
         for (let i = 0; i < this.scene.children.length; i++) {
             let child = this.scene.children[i];
 
@@ -78,6 +85,15 @@ class AppInit {
 
                 if (this.rightCollided || this.leftCollided) break;
             }
+        }
+    }
+
+    _switch() {
+        if (this.scene.player.currentDimension == "3D") {
+            this.scene.camera.position.set(3.96, 1.24, 2.75);
+            this.scene.camera.rotation.set(-0.6, 0.88, 0.49);
+        } else {
+            this.scene.camera.rotation.set(0, 0, 0);
         }
     }
 }

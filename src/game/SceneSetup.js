@@ -1,4 +1,5 @@
 import * as THREE from "three"
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js"
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js"
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js"
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js"
@@ -40,7 +41,7 @@ export default class SceneSetup extends THREE.Scene {
         const RIGHT = (window.innerWidth / 2) / 200;
         const TOP = (window.innerHeight / 2) / 200;
         const BOTTOM = (window.innerHeight / -2) / 200;
-        const NEAR = 0.01;
+        const NEAR = 0.1;
         const FAR = 10000;
 
         this.camera = new THREE.OrthographicCamera(LEFT, RIGHT, TOP, BOTTOM, NEAR, FAR);
@@ -48,7 +49,7 @@ export default class SceneSetup extends THREE.Scene {
 
         SceneSetup.addWindowResize(this.camera, this.renderer);
 
-        this.background = new THREE.Color(0x000000);
+        this.background = new THREE.Color(0x070707);
 
         this.renderScene = new RenderPass(this, this.camera);
         this.composer = new EffectComposer(this.renderer);
@@ -86,6 +87,8 @@ export default class SceneSetup extends THREE.Scene {
         this.ground2.position.x = -2;
         this.ground2.name = "wall";
         this.add(this.ground2);
+
+        if (debug) new OrbitControls(this.camera, this.renderer.domElement);
     }
 
     static addWindowResize(camera, renderer) {

@@ -13,10 +13,10 @@ import MenuNavigator from "./MenuNavigator.js"
 
 class AppInit {
     constructor() {
-        this._Initialize();
+        this._initialize();
     }
 
-    _Initialize() {
+    _initialize() {
         this.renderer = new THREE.WebGLRenderer({
             antialias: true
         })
@@ -54,7 +54,7 @@ class AppInit {
         this.camera.position.set(0, 0, 5);
 
         this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color(0x000000);
+        this.scene.background = new THREE.Color(0x070707);
 
         //post processing stuff
         this.renderScene = new RenderPass(this.scene, this.camera);
@@ -156,14 +156,14 @@ class AppInit {
 
         this.cameraOffset;
 
-        this._Animate();
+        this._animate();
     }
 
-    _Animate() {
+    _animate() {
         this.delta = (Date.now() - this.lastTime) / 1000;
         if (this.delta > 0.15) this.delta = 0.15; //low fps cap
 
-        requestAnimationFrame(() => this._Animate());
+        requestAnimationFrame(() => this._animate());
 
         //Collision detection
         for (let i = 0; i < this.scene.children.length; i++) {

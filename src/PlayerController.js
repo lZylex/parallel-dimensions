@@ -3,7 +3,6 @@ import { Vector2 } from "three"
 
 class PlayerControllerInput {
     constructor(keys) {
-        console.log(keys);
         this._keyLeft = { key: keys[0].toLowerCase(), pressed: false };
         this._keyRight = { key: keys[1].toLowerCase(), pressed: false };
         this._keyJump = { key: keys[2].toLowerCase(), pressed: false };
@@ -55,7 +54,8 @@ export default class PlayerController extends PlayerControllerInput {
         this.inAir = false;
     }
 
-    update(delta, colliders) {
+    //TODO: disable movement when switching
+    update(delta, colliders, currentDimension) {
         if (this._keyLeft.pressed) {
             if (this._velocity.x > -this._maxVelocity.x) {
                 Math.sign(this._velocity.x) == 1 ? this._velocity.x -= this._acceleration.x * 2.5 : this._velocity.x -= this._acceleration.x;
@@ -86,16 +86,22 @@ export default class PlayerController extends PlayerControllerInput {
         if (colliders.left && this._velocity.x < 0) this._velocity.x = 0;
 
         if (!colliders.bottom) {
-            this._velocity.y += this._gravity * 1.1;
+            if (currentDimension !== "noGrav") this._velocity.y += this._gravity * 1.1;
             this.inAir = false;
         } else if (colliders.bottom && !this.inAir) {
-            this._velocity.y = 0;
+            if (currentDimension !== "noGrav") this._velocity.y = 0;
             this.inAir = true;
         }
 
-        if (this._keyJump.pressed && this.inAir) this._velocity.y = 6.5;
+        if (this._keyJump.pressed && this.inAir && currentDimension !== "noGrav") this._velocity.y = 6.5;
 
         this.playerModel.position.x += (this._velocity.x * delta);
         this.playerModel.position.y += (this._velocity.y * delta);
+    }
+
+    //TODO: set timeout for this
+    resetLastCheckpoint(cords) {
+        this.playerModel.position.x = cords.x;
+        this.playerModel.position.y = cords.y;
     }
 }
