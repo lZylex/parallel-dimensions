@@ -47,7 +47,7 @@ export default class Player {
         return this.playerModel;
     }
 
-    addDimensionSwitcher(velocity) {
+    addDimensionSwitcher(velocity, glitchPass) {
         document.addEventListener("keydown", e => {
             if (this.canSwitch) {
                 if (e.key.toLowerCase() === "shift") {
@@ -63,12 +63,23 @@ export default class Player {
                                 this.currentIndex = this.unlockedDimensions.length - 1;
                             } else this.currentIndex -= 1;
                             this.indicatorSubtext.innerText = `${this.unlockedDimensions[this.currentIndex]}`;
+                            //tidious glitch effect but works like a charm
+                            glitchPass.goWild = true;
+                            setTimeout(() => {
+                                glitchPass.goWild = false
+                                setTimeout(() => glitchPass.randX = 0, 150);
+                            }, 10);
                             break;
                         case "arrowright":
                             if (this.currentIndex + 1 == this.unlockedDimensions.length) {
                                 this.currentIndex = 0;
                             } else this.currentIndex += 1;
                             this.indicatorSubtext.innerText = `${this.unlockedDimensions[this.currentIndex]}`;
+                            glitchPass.goWild = true;
+                            setTimeout(() => {
+                                glitchPass.goWild = false
+                                setTimeout(() => glitchPass.randX = 0, 150);
+                            }, 10);
                             break;
                     }
                 }

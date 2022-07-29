@@ -36,6 +36,9 @@ class PlayerControllerInput {
                 case this._keyJump.key:
                     this._keyJump.pressed = false;
                     break;
+                case "r":
+                    this.resetLastCheckpoint({ x: 0, y: -0.85 });
+                    break;
             }
         })
     }
@@ -47,7 +50,7 @@ export default class PlayerController extends PlayerControllerInput {
 
         this._gravity = -0.15;
         this._acceleration = new Vector2(0.175, 0.4);
-        this._velocity = new Vector2(0, 0);
+        this.velocity = new Vector2(0, 0);
         this._maxVelocity = new Vector2(4.5, 7);
 
         this.playerModel = playerModel;
@@ -58,46 +61,46 @@ export default class PlayerController extends PlayerControllerInput {
     update(delta, colliders, currentDimension, switchingDimension) {
         if (!switchingDimension) {
             if (this._keyLeft.pressed) {
-                if (this._velocity.x > -this._maxVelocity.x) {
-                    Math.sign(this._velocity.x) == 1 ? this._velocity.x -= this._acceleration.x * 2.5 : this._velocity.x -= this._acceleration.x;
+                if (this.velocity.x > -this._maxVelocity.x) {
+                    Math.sign(this.velocity.x) == 1 ? this.velocity.x -= this._acceleration.x * 2.5 : this.velocity.x -= this._acceleration.x;
                 } else {
-                    this._velocity.x = -this._maxVelocity.x
+                    this.velocity.x = -this._maxVelocity.x
                 }
             }
 
             if (this._keyRight.pressed) {
-                if (this._velocity.x < this._maxVelocity.x) {
-                    Math.sign(this._velocity.x) == -1 ? this._velocity.x += this._acceleration.x * 2.5 : this._velocity.x += this._acceleration.x;
+                if (this.velocity.x < this._maxVelocity.x) {
+                    Math.sign(this.velocity.x) == -1 ? this.velocity.x += this._acceleration.x * 2.5 : this.velocity.x += this._acceleration.x;
                 } else {
-                    this._velocity.x = this._maxVelocity.x
+                    this.velocity.x = this._maxVelocity.x
                 }
             }
 
             if (!this._keyRight.pressed && !this._keyLeft.pressed) {
-                if (this._velocity.x <= 0) {
-                    this._velocity.x += this._acceleration.x;
-                    if (Math.sign(this._velocity.x) === 1) this._velocity.x = 0;
-                } else if (this._velocity.x >= 0) {
-                    this._velocity.x -= this._acceleration.x;
-                    if (Math.sign(this._velocity.x) === -1) this._velocity.x = 0;
+                if (this.velocity.x <= 0) {
+                    this.velocity.x += this._acceleration.x;
+                    if (Math.sign(this.velocity.x) === 1) this.velocity.x = 0;
+                } else if (this.velocity.x >= 0) {
+                    this.velocity.x -= this._acceleration.x;
+                    if (Math.sign(this.velocity.x) === -1) this.velocity.x = 0;
                 }
             }
 
-            if (colliders.right && this._velocity.x > 0) this._velocity.x = 0;
-            if (colliders.left && this._velocity.x < 0) this._velocity.x = 0;
+            if (colliders.right && this.velocity.x > 0) this.velocity.x = 0;
+            if (colliders.left && this.velocity.x < 0) this.velocity.x = 0;
 
             if (!colliders.bottom) {
-                if (currentDimension !== "No Gravity") this._velocity.y += this._gravity * 1.1;
+                if (currentDimension !== "No Gravity") this.velocity.y += this._gravity * 1.1;
                 this.inAir = false;
             } else if (colliders.bottom && !this.inAir) {
-                if (currentDimension !== "No Gravity") this._velocity.y = 0;
+                if (currentDimension !== "No Gravity") this.velocity.y = 0;
                 this.inAir = true;
             }
 
-            if (this._keyJump.pressed && this.inAir && currentDimension !== "No Gravity") this._velocity.y = 6.5;
+            if (this._keyJump.pressed && this.inAir && currentDimension !== "No Gravity") this.velocity.y = 6.5;
 
-            this.playerModel.position.x += (this._velocity.x * delta);
-            this.playerModel.position.y += (this._velocity.y * delta);
+            this.playerModel.position.x += (this.velocity.x * delta);
+            this.playerModel.position.y += (this.velocity.y * delta);
         }
 
     }

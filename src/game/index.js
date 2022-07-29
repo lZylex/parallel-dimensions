@@ -26,8 +26,9 @@ class AppInit {
 
         this.cameraOffset;
 
+
         this.playerController = new PlayerController(localStorage.keybinds.split(","), this.scene.playerModel);
-        this.scene.player.addDimensionSwitcher(this.playerController._velocity);
+        this.scene.player.addDimensionSwitcher(this.playerController.velocity, this.scene.glitchPass);
 
         this._animate();
     }
