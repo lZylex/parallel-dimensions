@@ -2,16 +2,18 @@ import * as THREE from "three"
 
 export default class Player {
     constructor() {
-        this.currentDimension = "standard";
-        this.unlockedDimensions = ["standard", "noGrav", "3D"];
+        this.currentDimension = "Standard";
+        this.unlockedDimensions = ["Standard", "No Gravity", "Three Dimensions"];
         this.currentIndex = 0;
         this.switchDimension = false;
-        //3d, your perceive the 3d dimension, your vision is locked to one point though
+        //3d, your perceive the 3d dimension, your vision is locked to one point
         //"3D", "flipped"
         this.shiftKeyDown = false;
         this.canSwitch = false;
 
-        this.addDimensionSwitcher();
+        this.collectedKey = false;
+
+        this.indicatorSubtext = document.getElementById("dimension-indicator-subtext");
     }
 
     instantiateModel() {
@@ -39,17 +41,20 @@ export default class Player {
         this._bottomCollider.visible = false;
         this.playerModel.add(this._bottomCollider);
 
-        // this.playerModel.position.y = -0.75;
+        this.playerModel.position.y = -0.85;
         // this.playerModel.position.x = -4;
 
         return this.playerModel;
     }
 
-    addDimensionSwitcher() {
+    addDimensionSwitcher(velocity) {
         document.addEventListener("keydown", e => {
             if (this.canSwitch) {
-                if (e.key.toLowerCase() === "shift") this.shiftKeyDown = true;
-                this.switchDimension = true;
+                if (e.key.toLowerCase() === "shift") {
+                    this.switchDimension = true;
+                    this.shiftKeyDown = true;
+                    velocity.set(0, 0);
+                }
 
                 if (this.shiftKeyDown) {
                     switch (e.key.toLowerCase()) {
@@ -57,9 +62,13 @@ export default class Player {
                             if (this.currentIndex - 1 == -1) {
                                 this.currentIndex = this.unlockedDimensions.length - 1;
                             } else this.currentIndex -= 1;
-                            console.log(this.unlockedDimensions[this.currentIndex])
+                            this.indicatorSubtext.innerText = `${this.unlockedDimensions[this.currentIndex]}`;
                             break;
-                        case "arrowRight":
+                        case "arrowright":
+                            if (this.currentIndex + 1 == this.unlockedDimensions.length) {
+                                this.currentIndex = 0;
+                            } else this.currentIndex += 1;
+                            this.indicatorSubtext.innerText = `${this.unlockedDimensions[this.currentIndex]}`;
                             break;
                     }
                 }

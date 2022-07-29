@@ -1,5 +1,5 @@
 @font-face {
-    font-family: "test";
+    font-family: "Pixel Font";
     src: url("/resources//fonts/UASQUARE.TTF") format("truetype");
 }
 
@@ -17,7 +17,7 @@ body {
 
 #main-menu {
     color: #fff;
-    font-family: "test";
+    font-family: "Pixel Font";
     padding: 2.5em;
     display: flex;
     flex-direction: column;
@@ -42,7 +42,7 @@ body {
     list-style: none;
     padding: 0;
     font-size: 3rem;
-    margin-bottom: 25%;
+    margin-bottom: 20.15%;
 }
 
 .menu-choice {
@@ -56,6 +56,12 @@ body {
 .menu-choice:hover {
     filter: drop-shadow(0px 0px 1px #ffffff4a);
     transform: translate(10);
+}
+
+.cnt-play {
+    color: #fdfdfd;
+    transform: scale(0.9) !important;
+    filter: grayscale(1);
 }
 
 .selected {
@@ -79,7 +85,7 @@ body {
     font-size: 2.5rem;
     display: none;
     animation-name: smooth-in;
-    animation-duration: 0.5s;
+    animation-duration: 0.3s;
     animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
     animation-fill-mode: forwards;
 }
@@ -113,6 +119,44 @@ body {
     width: 100%;
 }
 
+#tutorial-splash {
+    color: #fff;
+    position: fixed;
+    filter: drop-shadow(0px 0px 2px #ffffff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.4rem;
+    height: 100vh;
+    width: 100vw;
+    display: none;
+    animation: fade-in 0.3s ease;
+}
+
+#explanation {
+    text-align: center;
+    position: relative;
+    top: -80px;
+}
+
+#level-indicator {
+    color: #fff;
+    position: fixed;
+    filter: drop-shadow(0px 0px 2px #ffffff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.4rem;
+    height: 100vh;
+    width: 100vw;
+}
+
+#level-indicator span {
+    position: relative;
+    top: 4em;
+    left: -1.4em;
+}
+
 @keyframes breathe {
     0% {
         filter: drop-shadow(0px 0px 2px #ffffff);
@@ -141,6 +185,18 @@ body {
     }
 }
 
+@keyframes smooth-out {
+    0% {
+        opacity: 1;
+        transform: translateX(-10%);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateX(-30%);
+    }
+}
+
 @keyframes expand-smooth-in {
     0% {
         width: 0%;
@@ -148,5 +204,25 @@ body {
 
     100% {
         width: 100%;
+    }
+}
+
+@keyframes fade-in {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes fade-out {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
     }
 }

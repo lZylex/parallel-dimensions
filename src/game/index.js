@@ -27,6 +27,7 @@ class AppInit {
         this.cameraOffset;
 
         this.playerController = new PlayerController(localStorage.keybinds.split(","), this.scene.playerModel);
+        this.scene.player.addDimensionSwitcher(this.playerController._velocity);
 
         this._animate();
     }
@@ -37,15 +38,15 @@ class AppInit {
 
         this._checkCollision();
 
-        this.playerController.update(this.delta, { bottom: this.bottomCollided, right: this.rightCollided, left: this.leftCollided }, this.scene.player.currentDimension);
+        this.playerController.update(this.delta, { bottom: this.bottomCollided, right: this.rightCollided, left: this.leftCollided }, this.scene.player.currentDimension, this.scene.player.switchDimension);
         this.playerController.inAir ? this.scene.player.canSwitch = true : this.scene.player.canSwitch = false;
 
 
         if (this.scene.player.switchDimension) this._switch();
 
-        if (this.scene.player.currentDimension !== "3D") {
+        if (this.scene.player.currentDimension !== "Three Dimensions") {
             this.scene.playerModel.updateMatrixWorld();
-            this.cameraOffset = new THREE.Vector3(0.1, 0.6, 1).applyMatrix4(this.scene.playerModel.matrixWorld);
+            this.cameraOffset = new THREE.Vector3(0.1, 0.6, 4.5).applyMatrix4(this.scene.playerModel.matrixWorld);
             this.scene.camera.position.lerp(this.cameraOffset, 0.095);
         }
 
@@ -89,7 +90,7 @@ class AppInit {
     }
 
     _switch() {
-        if (this.scene.player.currentDimension == "3D") {
+        if (this.scene.player.currentDimension == "Three Dimensions") {
             this.scene.camera.position.set(3.96, 1.24, 2.75);
             this.scene.camera.rotation.set(-0.6, 0.88, 0.49);
         } else {

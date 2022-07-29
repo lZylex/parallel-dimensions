@@ -1,14 +1,17 @@
 export default class MenuNavigator {
-    constructor(renderer) {
+    constructor(renderer, canEnterLevel) {
         this._renderer = renderer;
+        this.canEnterLevel = canEnterLevel;
 
         this._menuChoices = Array.from(document.querySelectorAll(".menu-choice"));
         this._currentChoice = this._menuChoices[0];
         this._optionsMenu = document.getElementById("options-selection");
+        this._tutorialSplash = document.getElementById("tutorial-splash");
         this._lastChoice = null;
         this._selectedClass = "selected";
 
         this._optionsMenu.style.display = "none";
+        this._tutorialSplash.style.display = "none";
 
         document.addEventListener("keydown", e => {
 
@@ -66,7 +69,7 @@ export default class MenuNavigator {
                     // let currentChoiceRef = this._menuChoices[this._menuChoices.indexOf(this._currentChoice)];
                     switch (this._currentChoice.innerText.split(" _ ")[0]) {
                         case "Play":
-                            window.location.href = "./game.html";
+                            if (this.canEnterLevel) window.location.href = "./game.html";
                             break;
                         case "Options":
                             this._optionsMenu.style.display === "none" ? this._optionsMenu.style.display = "block" : this._optionsMenu.style.display = "none";
@@ -78,6 +81,12 @@ export default class MenuNavigator {
                             this._currentChoice.classList.add(this._selectedClass);
                             Array.from(this._menuChoices)[0].children[0].innerText = `_ ${localStorage.postprocessing}`;
                             Array.from(this._menuChoices)[2].children[0].innerText = `_ ${localStorage.resolution}`;
+                            break;
+                        case "Tutorial":
+                            this._currentChoice.classList.remove(this._selectedClass);
+                            this._lastChoice = this._currentChoice;
+                            this._menuChoices = [];
+                            this._tutorialSplash.style.display = "flex";
                             break;
                         case "Post Processing":
                             if (localStorage.postprocessing === "true") {
@@ -97,7 +106,20 @@ export default class MenuNavigator {
                         this._currentChoice = this._lastChoice;
                         this._selectedClass = "selected";
                         this._currentChoice.classList.add(this._selectedClass);
-                        this._optionsMenu.style.display = "none";
+                        this._optionsMenu.style.animation = "smooth-out 0.3s cubic-bezier(0, 0, 0.2, 1) 0s 1 normal forwards";
+                        setTimeout(() => {
+                            this._optionsMenu.style.display = "none";
+                            this._optionsMenu.style.animation = "smooth-in 0.3s cubic-bezier(0, 0, 0.2, 1) 0s 1 normal forwards";
+                        }, 300);
+                    } else if (this._tutorialSplash.style.display !== "none") {
+                        this._menuChoices = Array.from(document.querySelectorAll(".menu-choice"));
+                        this._currentChoice = this._lastChoice;
+                        this._currentChoice.classList.add(this._selectedClass);
+                        this._tutorialSplash.style.animation = "fade-out 0.3s ease 0s 1 normal forwards";
+                        setTimeout(() => {
+                            this._tutorialSplash.style.display = "none";
+                            this._tutorialSplash.style.animation = "fade-in 0.3s ease 0s 1 normal forwards";
+                        }, 300);
                     }
                     break;
             }

@@ -76,7 +76,7 @@ class AppInit {
         const pixelPass = new ShaderPass(PixelShader);
         pixelPass.uniforms['resolution'].value = new THREE.Vector2(window.innerWidth, window.innerHeight);
         pixelPass.uniforms['resolution'].value.multiplyScalar(window.devicePixelRatio / 3);
-        pixelPass.uniforms['pixelSize'].value = 1;
+        pixelPass.uniforms['pixelSize'].value = 1.35;
         this.composer.addPass(pixelPass);
 
         this.playerModel = new THREE.Group();
@@ -104,32 +104,24 @@ class AppInit {
         this.playerModel.add(this.leftCollider);
 
         this.playerModel.position.y = -0.75;
-        this.playerModel.position.x = -4;
+        this.playerModel.position.x = -2.5;
         this.scene.add(this.playerModel);
 
-        this.ground = new THREE.Mesh(new THREE.BoxGeometry(10, 2, 1), new THREE.MeshStandardMaterial({ color: 0x787878, roughness: 0.35, metalness: 0.25 }));
+        this.ground = new THREE.Mesh(new THREE.BoxGeometry(9, 2, 1), new THREE.MeshStandardMaterial({ color: 0x787878, roughness: 0.35, metalness: 0.25 }));
         this.ground.receiveShadow = true;
         this.ground.position.y = -2;
         this.ground.name = "ground";
         this.scene.add(this.ground);
 
-        // this.groundRight = new THREE.Mesh(new THREE.BoxGeometry(3, 4, 1), new THREE.MeshStandardMaterial({ color: 0x787878, roughness: 0.35, metalness: 0.25 }));
-        // this.groundRight.receiveShadow = true;
-        // this.groundRight.position.x = 5;
-        // this.groundRight.position.y = -2.4;
-        // this.groundRight.name = "ground";
-        // this.scene.add(this.groundRight);
-
-        this.wallRight = new THREE.Mesh(new THREE.BoxGeometry(5, 4, 1), new THREE.MeshStandardMaterial({ color: 0x787878, roughness: 0.35, metalness: 0.25 }));
+        this.wallRight = new THREE.Mesh(new THREE.BoxGeometry(6, 10, 1), new THREE.MeshStandardMaterial({ color: 0x787878, roughness: 0.35, metalness: 0.25 }));
         this.wallRight.receiveShadow = true;
-        this.wallRight.position.x = 1;
-        this.wallRight.position.y = -2.5;
+        this.wallRight.position.x = 7.4;
         this.wallRight.name = "wall";
         this.scene.add(this.wallRight);
 
         this.wallLeft = new THREE.Mesh(new THREE.BoxGeometry(6, 10, 1), new THREE.MeshStandardMaterial({ color: 0x787878, roughness: 0.35, metalness: 0.25 }));
         this.wallLeft.receiveShadow = true;
-        this.wallLeft.position.x = -8;
+        this.wallLeft.position.x = -6;
         this.wallLeft.name = "wall";
         this.scene.add(this.wallLeft);
 
@@ -140,9 +132,11 @@ class AppInit {
         this.ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
         this.scene.add(this.ambientLight);
 
-        // this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+        this.scene.add(this._createLevelEntrance(1, 1));
+        this.scene.add(this._createLevelEntrance(2.25, 2));
+        this.scene.add(this._createLevelEntrance(3.5, 3));
 
-        new MenuNavigator(this.renderer);
+        this.menuNavigator = new MenuNavigator(this.renderer, false);
 
         this.playerController = new PlayerController(localStorage.keybinds.split(","), this.playerModel);
 
@@ -154,7 +148,12 @@ class AppInit {
         this.rightCollided = false;
         this.leftCollided = false;
 
+        this.levelOpenSpeed = 0;
+
         this.cameraOffset;
+
+        this.levelSubtext = document.getElementById("level-subtext");
+        this.levelSubtext.style.display = "none";
 
         this._animate();
     }
@@ -197,25 +196,43 @@ class AppInit {
             }
         }
 
+        for (let i = 0; i < this.scene.children.length; i++) {
+            let child = this.scene.children[i];
+
+            if (!this.playerModel.children.includes(child) && child.type === "Mesh" && child.name === "levelEntrance") {
+                let box = new THREE.Box3();
+                box.setFromObject(child);
+
+                this.levelOpen = box.intersectsBox(new THREE.Box3().setFromObject(this.cube));
+
+                if (child.scale.y >= 1 && !this.levelOpen) child.scale.y -= 0.06666;
+                if (child.scale.x >= 1 && !this.levelOpen) child.scale.x -= 0.06666;
+
+                if (this.levelOpen) {
+                    if (child.scale.y <= 2) child.scale.y += 0.066666;
+                    if (child.scale.x <= 1.3) child.scale.x += 0.06666;
+                    this.levelSubtext.innerText = `Level ${child.level}`;
+                    this.levelSubtext.style.animation = "fade-in 0.25s cubic-bezier(0, 0, 0.2, 1) 0s 1 normal forwards";
+                    this.levelSubtext.style.display = "flex";
+                    document.getElementsByClassName("menu-choice")[0].classList.remove("cnt-play");
+                    this.menuNavigator.canEnterLevel = true;
+                    break;
+                } else {
+                    this.levelSubtext.style.animation = "fade-out 0.25s cubic-bezier(0, 0, 0.2, 1) 0s 1 normal forwards";
+                    document.getElementsByClassName("menu-choice")[0].classList.add("cnt-play");
+                    this.menuNavigator.canEnterLevel = false;
+                }
+            }
+        }
+
         this.playerController.update(this.delta, { bottom: this.bottomCollided, right: this.rightCollided, left: this.leftCollided, top: this.topCollided });
 
         this.playerModel.updateMatrixWorld();
-        this.cameraOffset = new THREE.Vector3(0.1, 0.6, 1).applyMatrix4(this.playerModel.matrixWorld);
+        this.cameraOffset = new THREE.Vector3(0.1, 0.6, 4.5).applyMatrix4(this.playerModel.matrixWorld);
         this.camera.position.lerp(this.cameraOffset, 0.095);
         // this.camera.lookAt(this.playerModel);
 
-        // this.camera.position.x = this.playerModel.position.x;
-
-        // if (localStorage.postprocessing === "true") {
-        //     this.composer.render();
-        // } else {
-        //     this.renderer.render(this.scene, this.camera);
-        // }
-
         localStorage.postprocessing === "true" ? this.composer.render() : this.renderer.render(this.scene, this.camera);
-
-        //else this.renderer.render(this.scene, this.camera);
-        // 
 
         this.lastTime = Date.now();
     }
@@ -228,6 +245,16 @@ class AppInit {
 
         this.camera.updateProjectionMatrix();
         this.renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    _createLevelEntrance(positionX, level) {
+        const levelEntrance = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.3, 0.3), new THREE.MeshStandardMaterial({ roughness: 0.80, metalness: 0.55, normalScale: new THREE.Vector2(0.15, 0.15), emissive: new THREE.Color(0x3d3d3d) }));
+        levelEntrance.position.x = positionX;
+        levelEntrance.position.y = -0.85;
+        levelEntrance.position.z = -0.1;
+        levelEntrance.name = "levelEntrance";
+        levelEntrance.level = level;
+        return levelEntrance;
     }
 }
 

@@ -41,7 +41,7 @@ export default class SceneSetup extends THREE.Scene {
         const RIGHT = (window.innerWidth / 2) / 200;
         const TOP = (window.innerHeight / 2) / 200;
         const BOTTOM = (window.innerHeight / -2) / 200;
-        const NEAR = 0.1;
+        const NEAR = 0.01;
         const FAR = 10000;
 
         this.camera = new THREE.OrthographicCamera(LEFT, RIGHT, TOP, BOTTOM, NEAR, FAR);
@@ -65,7 +65,7 @@ export default class SceneSetup extends THREE.Scene {
         const pixelPass = new ShaderPass(PixelShader);
         pixelPass.uniforms['resolution'].value = new THREE.Vector2(window.innerWidth, window.innerHeight);
         pixelPass.uniforms['resolution'].value.multiplyScalar(window.devicePixelRatio / 3);
-        pixelPass.uniforms['pixelSize'].value = 1;
+        pixelPass.uniforms['pixelSize'].value = 1.35;
         this.composer.addPass(pixelPass);
 
         this.ambientLight = new THREE.AmbientLight(0xffffff, 0.2);

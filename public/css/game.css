@@ -1,4 +1,29 @@
+@font-face {
+    font-family: "Pixel Font";
+    src: url("/resources//fonts/UASQUARE.TTF") format("truetype");
+}
+
+
 body {
     margin: 0;
     padding: 0;
+}
+
+#dimension-indicator {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    font-family: "Pixel Font";
+    color: #fff;
+    font-size: 3.5rem;
+}
+
+#dimension-indicator span {
+    position: relative;
+    left: -20px;
+    opacity: 1;
+    margin: 0.5em;
 }
