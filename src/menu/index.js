@@ -1,12 +1,12 @@
 import * as THREE from "three"
 import PlayerController from "../PlayerController.js"
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js"
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js"
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js"
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js"
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js"
 import { VignetteShader } from "three/examples/jsm/shaders/VignetteShader.js"
 import { PixelShader } from "three/examples/jsm/shaders/PixelShader.js"
+import { RGBShiftShader } from "three/examples/jsm/shaders/RGBShiftShader.js"
 import MenuNavigator from "./MenuNavigator.js"
 
 //Too lazy to split and refactor, leave as is, just the menu
@@ -78,6 +78,10 @@ class AppInit {
         pixelPass.uniforms['resolution'].value.multiplyScalar(window.devicePixelRatio / 3);
         pixelPass.uniforms['pixelSize'].value = 1.35;
         this.composer.addPass(pixelPass);
+
+        const rgbShiftPass = new ShaderPass(RGBShiftShader);
+        rgbShiftPass.uniforms["amount"].value = 0.0015;
+        this.composer.addPass(rgbShiftPass);
 
         this.playerModel = new THREE.Group();
 

@@ -41,7 +41,6 @@ class AppInit {
         this.playerController.update(this.delta, { bottom: this.bottomCollided, right: this.rightCollided, left: this.leftCollided }, this.scene.player.currentDimension, this.scene.player.switchDimension);
         this.playerController.inAir ? this.scene.player.canSwitch = true : this.scene.player.canSwitch = false;
 
-
         if (this.scene.player.switchDimension) this._switch();
 
         if (this.scene.player.currentDimension !== "Three Dimensions") {

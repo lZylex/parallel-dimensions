@@ -6,6 +6,8 @@ import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js"
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js"
 import { VignetteShader } from "three/examples/jsm/shaders/VignetteShader.js"
 import { PixelShader } from "three/examples/jsm/shaders/PixelShader.js"
+import { RGBShiftShader } from "three/examples/jsm/shaders/RGBShiftShader.js"
+import { GlitchPass } from "three/examples/jsm/postprocessing/GlitchPass.js"
 import Player from "../Player.js"
 
 //This subclass extended from the built in THREE.Scene acts like an initializer for the game scene as it initializes everything as properties and saves the hassle of creating
@@ -55,6 +57,7 @@ export default class SceneSetup extends THREE.Scene {
         this.composer = new EffectComposer(this.renderer);
         this.composer.addPass(this.renderScene);
 
+        //post processing stuff
         const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.9, 0.1, 0);
         this.composer.addPass(bloomPass);
 
@@ -67,6 +70,10 @@ export default class SceneSetup extends THREE.Scene {
         pixelPass.uniforms['resolution'].value.multiplyScalar(window.devicePixelRatio / 3);
         pixelPass.uniforms['pixelSize'].value = 1.35;
         this.composer.addPass(pixelPass);
+
+        const rgbShiftPass = new ShaderPass(RGBShiftShader);
+        rgbShiftPass.uniforms["amount"].value = 0.0015;
+        this.composer.addPass(rgbShiftPass);
 
         this.ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
         this.add(this.ambientLight);
