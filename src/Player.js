@@ -3,7 +3,7 @@ import * as THREE from "three"
 export default class Player {
     constructor() {
         this.currentDimension = "Standard";
-        this.unlockedDimensions = ["Standard", "No Gravity", "Three Dimensions"];
+        this.unlockedDimensions = localStorage.dimensions.split(", ");
         this.currentIndex = 0;
         this.switchDimension = false;
         //3d, your perceive the 3d dimension, your vision is locked to one point
@@ -37,9 +37,15 @@ export default class Player {
         this.playerModel.add(this._rightCollider);
 
         this._bottomCollider = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.1, 0.1), new THREE.MeshStandardMaterial({ color: 0xff0000, roughness: 0.50, metalness: 0.55, normalScale: new THREE.Vector2(0.15, 0.15) }));
-        this._bottomCollider.position.y = -0.105;
+        this._bottomCollider.position.y = -0.115;
         this._bottomCollider.visible = false;
         this.playerModel.add(this._bottomCollider);
+
+        this._topCollider = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.1, 0.1), new THREE.MeshStandardMaterial({ color: 0xff0000, roughness: 0.50, metalness: 0.55, normalScale: new THREE.Vector2(0.15, 0.15) }));
+        this._topCollider.position.y = 0.185;
+        this._topCollider.position.z = 0.3;
+        this._topCollider.visible = false;
+        this.playerModel.add(this._topCollider);
 
         this.playerModel.position.y = -0.85;
         // this.playerModel.position.x = -4;
@@ -63,8 +69,7 @@ export default class Player {
                                 this.currentIndex = this.unlockedDimensions.length - 1;
                             } else this.currentIndex -= 1;
                             this.indicatorSubtext.innerText = `${this.unlockedDimensions[this.currentIndex]}`;
-                            //tidious glitch effect but works like a charm
-                            glitchPass.goWild = true;
+                            glitchPass.goWild = true; //tidious glitch effect but works like a charm
                             setTimeout(() => {
                                 glitchPass.goWild = false
                                 setTimeout(() => glitchPass.randX = 0, 150);

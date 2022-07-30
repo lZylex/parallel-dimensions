@@ -8,6 +8,7 @@ import { VignetteShader } from "three/examples/jsm/shaders/VignetteShader.js"
 import { PixelShader } from "three/examples/jsm/shaders/PixelShader.js"
 import { RGBShiftShader } from "three/examples/jsm/shaders/RGBShiftShader.js"
 import { GlitchPass } from "three/examples/jsm/postprocessing/GlitchPass.js"
+import StageLoader from "./StageLoader.js"
 import Player from "../Player.js"
 
 //This subclass extended from the built in THREE.Scene acts like an initializer for the game scene as it initializes everything as properties and saves the hassle of creating
@@ -77,7 +78,6 @@ export default class SceneSetup extends THREE.Scene {
 
         this.glitchPass = new GlitchPass();
         this.glitchPass.randX = 0;
-        console.log(this.glitchPass.curF);
         this.composer.addPass(this.glitchPass);
 
         this.ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
@@ -88,31 +88,8 @@ export default class SceneSetup extends THREE.Scene {
 
         this.add(this.playerModel);
 
-        this.ground = new THREE.Mesh(new THREE.BoxGeometry(10, 6, 1), new THREE.MeshStandardMaterial({ color: 0x787878, roughness: 0.35, metalness: 0.25 }));
-        this.ground.receiveShadow = true;
-        this.ground.position.y = -4;
-        this.ground.name = "wall";
-        this.add(this.ground);
-
-        this.wall = new THREE.Mesh(new THREE.BoxGeometry(6, 10, 1), new THREE.MeshStandardMaterial({ color: 0x787878, roughness: 0.35, metalness: 0.25 }));
-        this.wall.receiveShadow = true;
-        this.wall.position.x = -4;
-        this.wall.name = "wall";
-        this.add(this.wall);
-
-        this.ground2 = new THREE.Mesh(new THREE.BoxGeometry(10, 4, 1), new THREE.MeshStandardMaterial({ color: 0x787878, roughness: 0.35, metalness: 0.25 }));
-        this.ground2.receiveShadow = true;
-        this.ground2.position.y = -4;
-        this.ground2.position.x = 10;
-        this.ground2.name = "wall";
-        this.add(this.ground2);
-
-        this.ground3 = new THREE.Mesh(new THREE.BoxGeometry(10, 6, 1), new THREE.MeshStandardMaterial({ color: 0x787878, roughness: 0.35, metalness: 0.25 }));
-        this.ground3.receiveShadow = true;
-        this.ground3.position.y = -4;
-        this.ground3.position.x = 13;
-        this.ground3.name = "wall";
-        this.add(this.ground3);
+        this.stageLoader = new StageLoader(this);
+        this.stageLoader.loadStage(localStorage.level);
 
         if (debug) new OrbitControls(this.camera, this.renderer.domElement);
     }

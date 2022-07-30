@@ -215,11 +215,13 @@ class AppInit {
                 if (this.levelOpen) {
                     if (child.scale.y <= 2) child.scale.y += 0.066666;
                     if (child.scale.x <= 1.3) child.scale.x += 0.06666;
-                    this.levelSubtext.innerText = `Level ${child.level}`;
+                    this.levelSubtext.innerText = `Level ${child.stage.level}`;
                     this.levelSubtext.style.animation = "fade-in 0.25s cubic-bezier(0, 0, 0.2, 1) 0s 1 normal forwards";
                     this.levelSubtext.style.display = "flex";
                     document.getElementsByClassName("menu-choice")[0].classList.remove("cnt-play");
                     this.menuNavigator.canEnterLevel = true;
+                    localStorage.level = child.stage.level;
+                    localStorage.dimensions = child.stage.dimensions;
                     break;
                 } else {
                     this.levelSubtext.style.animation = "fade-out 0.25s cubic-bezier(0, 0, 0.2, 1) 0s 1 normal forwards";
@@ -229,7 +231,7 @@ class AppInit {
             }
         }
 
-        this.playerController.update(this.delta, { bottom: this.bottomCollided, right: this.rightCollided, left: this.leftCollided, top: this.topCollided });
+        this.playerController.update(this.delta, { bottom: this.bottomCollided, right: this.rightCollided, left: this.leftCollided, top: this.topCollided }, "Standard", false);
 
         this.playerModel.updateMatrixWorld();
         this.cameraOffset = new THREE.Vector3(0.1, 0.6, 4.5).applyMatrix4(this.playerModel.matrixWorld);
@@ -252,12 +254,25 @@ class AppInit {
     }
 
     _createLevelEntrance(positionX, level) {
-        const levelEntrance = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.3, 0.3), new THREE.MeshStandardMaterial({ roughness: 0.80, metalness: 0.55, normalScale: new THREE.Vector2(0.15, 0.15), emissive: new THREE.Color(0x3d3d3d) }));
+        const levelEntrance = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.3, 0.3), new THREE.MeshStandardMaterial({ roughness: 0.80, metalness: 0.55, normalScale: new THREE.Vector2(0.15, 0.15), emissive: new THREE.Color(0x3f436e) }));
         levelEntrance.position.x = positionX;
         levelEntrance.position.y = -0.85;
         levelEntrance.position.z = -0.1;
         levelEntrance.name = "levelEntrance";
-        levelEntrance.level = level;
+        levelEntrance.stage = { level: level, dimensions: "" };
+
+        switch (level) {
+            case 1:
+                levelEntrance.stage.dimensions = "Standard, No Gravity";
+                break;
+            case 2:
+                levelEntrance.stage.dimensions = "Standard, Inverted";
+                break;
+            case 3:
+                levelEntrance.stage.dimensions = "Standard, No Gravity, Inverted";
+                break;
+        }
+
         return levelEntrance;
     }
 }

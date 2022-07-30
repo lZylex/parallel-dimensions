@@ -16,6 +16,8 @@ class AppInit {
         this.scene = new SceneSetup();
         this.scene.initialize(false);
 
+        this._addEventListener();
+
         this.lastTime = Date.now();
         this.delta;
 
@@ -26,9 +28,10 @@ class AppInit {
 
         this.cameraOffset;
 
-
         this.playerController = new PlayerController(localStorage.keybinds.split(","), this.scene.playerModel);
         this.scene.player.addDimensionSwitcher(this.playerController.velocity, this.scene.glitchPass);
+
+        this.hasKey = false;
 
         this._animate();
     }
@@ -38,17 +41,14 @@ class AppInit {
         if (this.delta > 0.010) this.delta = 0.010; //low fps cap
 
         this._checkCollision();
+        this._checkInversion();
 
-        this.playerController.update(this.delta, { bottom: this.bottomCollided, right: this.rightCollided, left: this.leftCollided }, this.scene.player.currentDimension, this.scene.player.switchDimension);
+        this.playerController.update(this.delta, { bottom: this.bottomCollided, right: this.rightCollided, left: this.leftCollided, top: this.topCollided }, this.scene.player.currentDimension, this.scene.player.switchDimension);
         this.playerController.inAir ? this.scene.player.canSwitch = true : this.scene.player.canSwitch = false;
 
-        if (this.scene.player.switchDimension) this._switch();
-
-        if (this.scene.player.currentDimension !== "Three Dimensions") {
-            this.scene.playerModel.updateMatrixWorld();
-            this.cameraOffset = new THREE.Vector3(0.1, 0.6, 4.5).applyMatrix4(this.scene.playerModel.matrixWorld);
-            this.scene.camera.position.lerp(this.cameraOffset, 0.095);
-        }
+        this.scene.playerModel.updateMatrixWorld();
+        this.cameraOffset = new THREE.Vector3(0.1, 0.6, 4.5).applyMatrix4(this.scene.playerModel.matrixWorld);
+        this.scene.camera.position.lerp(this.cameraOffset, 0.095);
 
         localStorage.postprocessing === "true" ? this.scene.composer.render() : this.scene.renderer.render(this.scene, this.scene.camera);
 
@@ -58,6 +58,7 @@ class AppInit {
     }
 
     _checkCollision() {
+
         for (let i = 0; i < this.scene.children.length; i++) {
             let child = this.scene.children[i];
 
@@ -69,8 +70,9 @@ class AppInit {
                 this.rightCollided = box.intersectsBox(new THREE.Box3().setFromObject(this.scene.playerModel.children[2]));
 
                 this.bottomCollided = box.intersectsBox(new THREE.Box3().setFromObject(this.scene.playerModel.children[3]));
+                this.topCollided = box.intersectsBox(new THREE.Box3().setFromObject(this.scene.playerModel.children[4]));
 
-                if (this.bottomCollided) break;
+                if (this.bottomCollided || this.topCollided) break;
             }
         }
 
@@ -87,15 +89,57 @@ class AppInit {
                 if (this.rightCollided || this.leftCollided) break;
             }
         }
+
+        for (let i = 0; i < this.scene.children.length; i++) {
+            let child = this.scene.children[i];
+
+            if (!this.scene.playerModel.children.includes(child) && child.type === "Mesh" && child.name === "exit") {
+                let box = new THREE.Box3();
+                box.setFromObject(child);
+
+                if (this.hasKey) this.exitOpen = box.intersectsBox(new THREE.Box3().setFromObject(this.scene.playerModel.children[0]));
+
+                if (child.scale.y >= 1.1 && !this.exitOpen) child.scale.y -= 0.06666;
+                if (child.scale.x >= 1.1 && !this.exitOpen) child.scale.x -= 0.06666;
+
+                if (this.exitOpen) {
+                    if (child.scale.y <= 2) child.scale.y += 0.066666;
+                    if (child.scale.x <= 1.3) child.scale.x += 0.06666;
+                }
+            }
+
+            if (!this.scene.playerModel.children.includes(child) && child.type === "Mesh" && child.name === "key") {
+                let box = new THREE.Box3();
+                box.setFromObject(child);
+
+                this.hasKey = box.intersectsBox(new THREE.Box3().setFromObject(this.scene.playerModel.children[0]));
+
+                if (this.hasKey) this.scene.remove(child);
+            }
+        }
     }
 
-    _switch() {
-        if (this.scene.player.currentDimension == "Three Dimensions") {
-            this.scene.camera.position.set(3.96, 1.24, 2.75);
-            this.scene.camera.rotation.set(-0.6, 0.88, 0.49);
+    _checkInversion() {
+        if (this.scene.player.currentDimension === "Inverted") {
+            this.scene.playerModel.children[1].position.y = -0.03;
+            this.scene.playerModel.children[2].position.y = -0.03;
         } else {
-            this.scene.camera.rotation.set(0, 0, 0);
+            this.scene.playerModel.children[1].position.y = 0.03;
+            this.scene.playerModel.children[2].position.y = 0.03;
         }
+    }
+
+    _addEventListener() {
+        window.addEventListener("keydown", e => {
+            switch (e.key.toLowerCase()) {
+                case "escape":
+                    console.log("insert escape menu here");
+                    break;
+                case "enter":
+                    if (this.exitOpen) window.location.href = "/menu.html";
+                    break;
+            }
+        })
     }
 }
 

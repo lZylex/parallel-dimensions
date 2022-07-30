@@ -6,6 +6,8 @@ class PlayerControllerInput {
         this._keyLeft = { key: keys[0].toLowerCase(), pressed: false };
         this._keyRight = { key: keys[1].toLowerCase(), pressed: false };
         this._keyJump = { key: keys[2].toLowerCase(), pressed: false };
+        this._keyForward = { key: "w", pressed: false };
+        this._keyBackward = { key: "s", pressed: false };
 
         this._Init();
     }
@@ -22,6 +24,12 @@ class PlayerControllerInput {
                 case this._keyJump.key:
                     this._keyJump.pressed = true;
                     break;
+                case this._keyForward.key:
+                    this._keyForward.pressed = true;
+                    break;
+                case this._keyBackward.key:
+                    this._keyBackward.pressed = true;
+                    break;
             }
         })
 
@@ -35,6 +43,12 @@ class PlayerControllerInput {
                     break;
                 case this._keyJump.key:
                     this._keyJump.pressed = false;
+                    break;
+                case this._keyForward.key:
+                    this._keyForward.pressed = false;
+                    break;
+                case this._keyBackward.key:
+                    this._keyBackward.pressed = false;
                     break;
                 case "r":
                     this.resetLastCheckpoint({ x: 0, y: -0.85 });
@@ -57,7 +71,6 @@ export default class PlayerController extends PlayerControllerInput {
         this.inAir = false;
     }
 
-    //TODO: disable movement when switching
     update(delta, colliders, currentDimension, switchingDimension) {
         if (!switchingDimension) {
             if (this._keyLeft.pressed) {
@@ -89,23 +102,39 @@ export default class PlayerController extends PlayerControllerInput {
             if (colliders.right && this.velocity.x > 0) this.velocity.x = 0;
             if (colliders.left && this.velocity.x < 0) this.velocity.x = 0;
 
-            if (!colliders.bottom) {
-                if (currentDimension !== "No Gravity") this.velocity.y += this._gravity * 1.1;
-                this.inAir = false;
-            } else if (colliders.bottom && !this.inAir) {
-                if (currentDimension !== "No Gravity") this.velocity.y = 0;
-                this.inAir = true;
+            if (currentDimension !== "Inverted") {
+                if (!colliders.bottom) {
+                    if (currentDimension !== "No Gravity") this.velocity.y += this._gravity * 1.1;
+                    this.inAir = false;
+                } else if (colliders.bottom && !this.inAir) {
+                    if (currentDimension !== "No Gravity") this.velocity.y = 0;
+                    this.inAir = true;
+                }
             }
 
-            if (this._keyJump.pressed && this.inAir && currentDimension !== "No Gravity") this.velocity.y = 6.5;
+            if (this._keyJump.pressed && this.inAir && currentDimension === "Standard") this.velocity.y = 6.5;
 
             this.playerModel.position.x += (this.velocity.x * delta);
             this.playerModel.position.y += (this.velocity.y * delta);
+
+            if (currentDimension === "Inverted") {
+                if (!colliders.top) {
+                    this.velocity.y -= this._gravity * 1.1;
+                    this.inAir = false;
+                } else if (colliders.top && !this.inAir) {
+                    this.velocity.y = 0;
+                    this.inAir = true;
+                }
+                if (this._keyJump.pressed && this.inAir) this.velocity.y = -6.5;
+            }
         }
 
+        if (this.playerModel.position.y <= -7.5 || this.playerModel.position.y >= 10.5) {
+            this.resetLastCheckpoint({ x: 0, y: -0.85 });
+        }
     }
 
-    //TODO: set timeout for this
+    //TODO: hold to retry
     resetLastCheckpoint(cords) {
         this.playerModel.position.x = cords.x;
         this.playerModel.position.y = cords.y;
