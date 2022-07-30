@@ -19,6 +19,7 @@ body {
     font-family: "Pixel Font";
     color: #fff;
     font-size: 3.5rem;
+    filter: drop-shadow(0px 0px 2px #ffffff);
 }
 
 #dimension-indicator span {
@@ -26,4 +27,61 @@ body {
     left: -20px;
     opacity: 1;
     margin: 0.5em;
+}
+
+#exit-indicator {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Pixel Font";
+    color: #fff;
+    font-size: 2.4rem;
+    filter: drop-shadow(0px 0px 2px #ffffff);
+}
+
+#exit-indicator-subtext {
+    position: relative;
+    top: 5em;
+    left: -0.2em;
+}
+
+#bean-indicator {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Pixel Font";
+    color: #fff;
+    font-size: 6.4rem;
+    filter: drop-shadow(0px 0px 2px #ffffff);
+}
+
+#bean-indicator span {
+    position: relative;
+    left: -0.175em;
+}
+
+@keyframes fade-in {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes fade-out {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
 }

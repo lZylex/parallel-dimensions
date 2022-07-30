@@ -31,6 +31,8 @@ class AppInit {
         this.playerController = new PlayerController(localStorage.keybinds.split(","), this.scene.playerModel);
         this.scene.player.addDimensionSwitcher(this.playerController.velocity, this.scene.glitchPass);
 
+        this.exitSubtext = document.getElementById("exit-indicator-subtext");
+        this.exitSubtext.style.display = "none";
         this.hasKey = false;
 
         this._animate();
@@ -49,6 +51,8 @@ class AppInit {
         this.scene.playerModel.updateMatrixWorld();
         this.cameraOffset = new THREE.Vector3(0.1, 0.6, 4.5).applyMatrix4(this.scene.playerModel.matrixWorld);
         this.scene.camera.position.lerp(this.cameraOffset, 0.095);
+
+        this.scene.playerModel.position.x <= -11 ? document.getElementById("bean-indicator").style.display = "flex" : document.getElementById("bean-indicator").style.display = "none";
 
         localStorage.postprocessing === "true" ? this.scene.composer.render() : this.scene.renderer.render(this.scene, this.scene.camera);
 
@@ -105,6 +109,10 @@ class AppInit {
                 if (this.exitOpen) {
                     if (child.scale.y <= 2) child.scale.y += 0.066666;
                     if (child.scale.x <= 1.3) child.scale.x += 0.06666;
+                    this.exitSubtext.style.display = "flex";
+                    this.exitSubtext.style.animation = "fade-in 0.25s cubic-bezier(0, 0, 0.2, 1) 0s 1 normal forwards"
+                } else {
+                    this.exitSubtext.style.animation = "fade-out 0.25s cubic-bezier(0, 0, 0.2, 1) 0s 1 normal forwards"
                 }
             }
 
@@ -115,6 +123,12 @@ class AppInit {
                 this.hasKey = box.intersectsBox(new THREE.Box3().setFromObject(this.scene.playerModel.children[0]));
 
                 if (this.hasKey) this.scene.remove(child);
+            }
+
+            if (child.name === "bean") {
+                child.rotation.x += 0.05;
+                child.rotation.y += 0.01;
+                child.rotation.z += 0.05;
             }
         }
     }

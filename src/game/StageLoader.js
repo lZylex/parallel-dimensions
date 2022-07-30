@@ -10,8 +10,11 @@ export default class StageLoader {
             case 1:
                 this._instantiateWall(1, 10, 0, -6);
                 this._instantiateWall(2, 10, 3, -6);
-                this._createKey(1, 0)
+                this._createKey(1, 0);
                 this._instantiateExit(3, -0.85);
+                this._inventBean(-11, 0);
+                this._inventBean(-12, 0);
+                this._inventBean(-13, 0);
                 break;
             case 2:
                 this._instantiateWall(1, 10, 0, -6);
@@ -51,7 +54,11 @@ export default class StageLoader {
         this._scene.add(this.key);
     }
 
-    _inventBean() {
-        return;
+    _inventBean(x, y) { // suspicious
+        this.bean = new THREE.Mesh(new THREE.CapsuleGeometry(0.1, 0.2, 32, 64), new THREE.MeshBasicMaterial({ color: 0x402300 }));
+        this.bean.position.x = x;
+        this.bean.position.y = y;
+        this.bean.name = "bean";
+        this._scene.add(this.bean)
     }
 }
