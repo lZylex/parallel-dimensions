@@ -35,6 +35,10 @@ class AppInit {
         this.exitSubtext.style.display = "none";
         this.hasKey = false;
 
+        this.escapeMenu = document.getElementById("escape-menu");
+        this.escapeMenu.style.display = "none";
+        this.escapeMenuOpen = false;
+
         this._animate();
     }
 
@@ -46,19 +50,18 @@ class AppInit {
         this._checkInversion();
 
         this.playerController.update(this.delta, { bottom: this.bottomCollided, right: this.rightCollided, left: this.leftCollided, top: this.topCollided }, this.scene.player.currentDimension, this.scene.player.switchDimension);
-        this.playerController.inAir ? this.scene.player.canSwitch = true : this.scene.player.canSwitch = false;
+        this.bottomCollided || this.topCollided ? this.scene.player.canSwitch = true : this.scene.player.canSwitch = false;
 
         this.scene.playerModel.updateMatrixWorld();
         this.cameraOffset = new THREE.Vector3(0.1, 0.6, 4.5).applyMatrix4(this.scene.playerModel.matrixWorld);
         this.scene.camera.position.lerp(this.cameraOffset, 0.095);
-
-        this.scene.playerModel.position.x <= -11 ? document.getElementById("bean-indicator").style.display = "flex" : document.getElementById("bean-indicator").style.display = "none";
 
         localStorage.postprocessing === "true" ? this.scene.composer.render() : this.scene.renderer.render(this.scene, this.scene.camera);
 
         requestAnimationFrame(() => this._animate());
 
         this.lastTime = Date.now();
+        console.log(this.escapeMenuOpen)
     }
 
     _checkCollision() {
@@ -147,10 +150,17 @@ class AppInit {
         window.addEventListener("keydown", e => {
             switch (e.key.toLowerCase()) {
                 case "escape":
-                    console.log("insert escape menu here");
+                    if (!this.escapeMenuOpen) {
+                        this.escapeMenuOpen = true;
+                        this.escapeMenu.style.display = "flex";
+                        this.escapeMenu.style.animation = "fade-in 0.15s cubic-bezier(0, 0, 0.2, 1) 0s 1 normal forwards";
+                    } else {
+                        this.escapeMenuOpen = false;
+                        this.escapeMenu.style.animation = "fade-out 0.15s cubic-bezier(0, 0, 0.2, 1) 0s 1 normal forwards";
+                    }
                     break;
                 case "enter":
-                    if (this.exitOpen) window.location.href = "/menu.html";
+                    if (this.exitOpen || this.escapeMenuOpen) window.location.href = "/menu.html";
                     break;
             }
         })

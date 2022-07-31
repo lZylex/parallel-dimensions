@@ -119,7 +119,7 @@ class AppInit {
 
         this.wallRight = new THREE.Mesh(new THREE.BoxGeometry(6, 10, 1), new THREE.MeshStandardMaterial({ color: 0x787878, roughness: 0.35, metalness: 0.25 }));
         this.wallRight.receiveShadow = true;
-        this.wallRight.position.x = 7.4;
+        this.wallRight.position.x = 6;
         this.wallRight.name = "wall";
         this.scene.add(this.wallRight);
 
@@ -138,7 +138,7 @@ class AppInit {
 
         this.scene.add(this._createLevelEntrance(1, 1));
         this.scene.add(this._createLevelEntrance(2.25, 2));
-        this.scene.add(this._createLevelEntrance(3.5, 3));
+        // this.scene.add(this._createLevelEntrance(3.5, 3));
 
         this.menuNavigator = new MenuNavigator(this.renderer, false);
 

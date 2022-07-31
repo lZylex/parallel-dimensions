@@ -9,17 +9,43 @@ export default class StageLoader {
         switch (parseInt(stage)) {
             case 1:
                 this._instantiateWall(1, 10, 0, -6);
-                this._instantiateWall(2, 10, 3, -6);
-                this._createKey(1, 0);
-                this._instantiateExit(3, -0.85);
-                this._inventBean(-11, 0);
-                this._inventBean(-12, 0);
-                this._inventBean(-13, 0);
+                this._instantiateWall(2, 10, 5, -6);
+                this._instantiateWall(2, 10, -4.15, -3.575);
+                this._createKey(-4.15, 1.95);
+                this._instantiateExit(5, -0.85);
+                this._instantiateWall(2, 0.35, 5, 1.25);
+                this._instantiateWall(0.3, 10, 8, -6);
+                this._instantiateWall(0.4, 10, 10, -5.5);
+                this._instantiateWall(0.6, 10, 12, -5.2);
+                this._instantiateWall(0.6, 10, 16, -5.2);
+                this._instantiateWall(0.6, 10, 18, -4.4);
+                this._instantiateWall(0.7, 0.35, 16, 1.25);
+                this._inventBean(-35, 2.5);
+                this._inventBean(-36, 2.5);
+                this._inventBean(-37, 2.5);
                 break;
             case 2:
                 this._instantiateWall(1, 10, 0, -6);
+                this._instantiateWall(1, 0.5, 0, 1);
+                this._instantiateWall(1, 0.35, -4, 1.2);
+                this._instantiateWall(1, 10, 3, -6);
+                this._instantiateWall(1, 10, 5.45, -5.5);
+                this._instantiateWall(1, 0.5, 7, 2);
+                this._instantiateWall(1, 0.5, 5.45, 5);
+                this._instantiateWall(1, 0.5, 2.5, 5);
+                this._instantiateWall(1, 10, 9, -5.1);
+                this._instantiateWall(1, 10, 11.5, -5.1);
+                this._instantiateWall(1, 0.5, 12, 2);
+                this._instantiateWall(1, 0.25, 12, 4);
+                this._createKey(12, 2.5);
+                this._instantiateWall(1, 0.25, 9, 4);
+                this._instantiateWall(1, 0.35, -2, 5);
+                this._instantiateExit(-4, 1.53);
                 break;
             case 3:
+                this._instantiateWall(5, 10, 0, -6);
+                this._instantiateWall(5, 10, 0, 6);
+                this._instantiateWall(1.25, 0.5, 6.5, 1.25);
                 break;
         }
     }

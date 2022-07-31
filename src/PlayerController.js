@@ -129,8 +129,9 @@ export default class PlayerController extends PlayerControllerInput {
             }
         }
 
-        if (this.playerModel.position.y <= -7.5 || this.playerModel.position.y >= 10.5) {
+        if (this.playerModel.position.y <= -7.5 || this.playerModel.position.y >= 15.5) {
             this.resetLastCheckpoint({ x: 0, y: -0.85 });
+            this.velocity.set(0, 0);
         }
     }
 

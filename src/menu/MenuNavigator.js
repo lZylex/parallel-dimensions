@@ -106,10 +106,10 @@ export default class MenuNavigator {
                         this._currentChoice = this._lastChoice;
                         this._selectedClass = "selected";
                         this._currentChoice.classList.add(this._selectedClass);
-                        this._optionsMenu.style.animation = "smooth-out 0.3s cubic-bezier(0, 0, 0.2, 1) 0s 1 normal forwards";
+                        this._optionsMenu.style.animation = "smooth-out 0.15s cubic-bezier(0, 0, 0.2, 1) 0s 1 normal forwards";
                         setTimeout(() => {
                             this._optionsMenu.style.display = "none";
-                            this._optionsMenu.style.animation = "smooth-in 0.3s cubic-bezier(0, 0, 0.2, 1) 0s 1 normal forwards";
+                            this._optionsMenu.style.animation = "smooth-in 0.15s cubic-bezier(0, 0, 0.2, 1) 0s 1 normal forwards";
                         }, 300);
                     } else if (this._tutorialSplash.style.display !== "none") {
                         this._menuChoices = Array.from(document.querySelectorAll(".menu-choice"));
